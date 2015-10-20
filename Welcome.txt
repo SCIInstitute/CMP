@@ -1,0 +1,1 @@
+Placeholder for Welcome file.  Used in the packaging and dist.

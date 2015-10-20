@@ -1,4 +1,3 @@
-# CMP
 Computational Molecular Phenotyping (CMP) is a micromolecular
 profiling technology. Micromolecules can be quantitatively probed with
 hapten-specific IgG reagents with subcellular resolution. CMP is the
@@ -12,4 +11,3 @@ This codebase implements an interface to clustering and visualizing
 cell classes from CMP image data.  It was created for the Robert Marc
 Lab by Josh Cates (SCI Institute) as part of a project with the TVC
 Software Development Center.
-

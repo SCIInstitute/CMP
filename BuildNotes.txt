@@ -1,0 +1,35 @@
+Notes for building qwt on MacOSX (SnowLeopard) using qwt-6.0.0-rc1.  
+
+1) Download standard qwt distribution.
+
+2) Configure qwt: 
+
+* It is easiest to build the static library for distributing applications and
+Qt Designer plugins.  Edit qwtconfig.pri and comment out the line enabling
+dynamic library builds.
+
+* In some distributions, qwt is configured to build only debug libraries on
+Macs.  Edit the qwtbuild.pri file for CONFIG += release
+
+* In some distributions when building the designer plugin and the examples, the
+default configuration will look for a qwt framework and will fail when Qt
+proper has been installed as a framework.  Edit the designer/designer.pro file
+and the examples/examples.pri files as follows: Comment out the
+qtAddLibrary(qwt) line.  Add -lqwt to the "LIBS +=" line.
+
+Note 11/2 jc -- In newer distributions (6.0) it looks like they tried to fix
+this logic, but it does not work for me.  Looks like they are trying to build
+qwt as a framework if qt has been built as a framework, but it doesn't work
+correctly when building with gcc. Maybe it works using xcode?  Anyway, needs
+revisiting once 6.0.0 stabilizes.
+
+
+3) Build qwt:
+qmake -spec macx-g++
+make
+sudo make install
+
+4) Copy the libqwt_designer_plugin.dylib file to the /designer/plugins director
+for the main Qt install.
+
+

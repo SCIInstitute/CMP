@@ -1,0 +1,1 @@
+CMP Computational Molecular Phenotyping -- PACKAGE DESCRIPTION GOES HERE

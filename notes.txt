@@ -1,0 +1,10 @@
+Plots to implement:
+
+* 1D histogram signatures  --  QwtPlot
+* 1D image histograms masked by class -- QwtPlot
+2D image histograms -- use QwtSpectrogram; see spectrogram example (pans, zooms, etc)
+2D image histograms masked by class -- same as above
+
+2D scatterplots -- QwtPlot;  need a random sampling from image function
+2D scatterplots -- masked; need another random sampling function under mask
+

@@ -1,0 +1,17 @@
+file(GLOB QWT_MOC_HDRS   *.h)
+file(GLOB QWT_SRC *.cpp)
+
+# this command will generate rules that will run rcc on all files from CMP_RCS
+# in result CMP_RC_SRCS variable will contain paths to files produced by rcc
+#QT4_ADD_RESOURCES( CMP_RC_SRCS ${CMP_RCS} )
+
+# this will run uic on .ui files:
+#QT4_WRAP_UI( QWT_UI_HDRS ${CMP_UIS} )
+
+# and finally this will run moc:
+QT4_WRAP_CPP( QWT_MOC_SRCS ${QWT_MOC_HDRS} )
+
+add_library(qwt ${QWT_MOC_SRCS} ${QWT_SRC})
+
+install(TARGETS qwt ARCHIVE DESTINATION lib  )
+install(FILES ${QWT_MOC_HDRS} DESTINATION include)

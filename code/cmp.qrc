@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/CMP" >
+        <file>qss/default.qss</file>
+        <file>Resources/visualize.png</file>
+        <file>Resources/add.png</file>
+        <file>Resources/remove.png</file>
+        <file>Resources/cluster.png</file>
+        <file>Resources/import.png</file>
+        <file>Resources/prefilter.png</file>
+        <file>Resources/export.png</file>
+        <file>Resources/select.png</file>
+        <file>Resources/unselect.png</file>
+        <file>Resources/R.png</file>
+        <file>Resources/G.png</file>
+        <file>Resources/B.png</file>
+        <file>Resources/RGB.png</file>    
+        <file>Resources/RG.png</file>    
+        <file>Resources/RB.png</file>    
+        <file>Resources/GB.png</file>
+        <file>Resources/splash.png</file>
+        <file>Resources/splash1.png</file> 
+        <file>Resources/splash3.png</file> 
+    </qresource>
+</RCC>

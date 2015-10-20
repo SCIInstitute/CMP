@@ -1,0 +1,68 @@
+project( QWT )
+cmake_minimum_required(VERSION 2.8.3)
+
+# Match everything when analyzing dependencies
+INCLUDE_REGULAR_EXPRESSION("^.*$")
+#option (BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option (BUILD_EXAMPLES "Build QWT examples applications." OFF)
+option (BUILD_TEXTENGINES "Build QWT textengines directory." OFF)
+option (BUILD_QT_DESIGNER_PLUGINS "Build QT designer plugins." OFF)
+
+#option (INSTALL_TEST_FILES "Include CMP test images and help files in the install." OFF)
+#option (INSTALL_SOURCE  "Install CMP source code." OFF)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+add_definitions( -Wall )
+
+# by default only QtCore and QtGui modules are enabled
+# other modules must be enabled like this:
+set( QT_USE_QT3SUPPORT TRUE )   
+set( QT_USE_QTXML TRUE )
+
+#--------------------------------------------------------------------------------
+# This sets the windows build that will need the special winmain@16 call. Qt provides
+#  this for us in the qtmain.lib file. Using this cmake code will ensure we have it
+#  linked into our build. Not needed on Unix/OS X/Linux which is why we have the 
+#  IF(WIN32) conditional.
+if(WIN32)
+  set (QT_USE_QTMAIN TRUE)
+endif(WIN32)
+
+# this command finds Qt4 libraries and sets all required variables
+# note that it's Qt4, not QT4 or qt4
+find_package( Qt4 REQUIRED )
+
+# add some useful macros and variables
+# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
+include(${QT_USE_FILE} )
+include_directories(${QT_QTSVG_INCLUDE_DIR})
+
+# Include subdirectories in the cmp build
+include_directories(${QWT_SOURCE_DIR}/src)
+add_subdirectory(${QWT_SOURCE_DIR}/src)
+
+if (BUILD_EXAMPLES)
+  add_subdirectory(${QWT_SOURCE_DIR}/examples)
+endif(BUILD_EXAMPLES)
+
+if (BUILD_TEXTENGINES)
+  add_subdirectory(${QWT_SOURCE_DIR}/textengines)
+endif (BUILD_TEXTENGINES)
+
+if (BUILD_QT_DESIGNER_PLUGINS)
+  add_subdirectory(${QWT_SOURCE_DIR}/designer)
+endif (BUILD_QT_DESIGNER_PLUGINS)
+
+# in result CMP_RC_SRCS variable will contain paths to files produced by rcc
+#QT4_ADD_RESOURCES( CMP_RC_SRCS ${CMP_RCS} )
+
+# this will run uic on .ui files:
+#QT4_WRAP_UI( CMP_UI_HDRS ${CMP_UIS} )
+
+# and finally this will run moc:
+#QT4_WRAP_CPP( CMP_MOC_SRCS ${CMP_MOC_HDRS} )
+
+# we need this to be able to include headers produced by uic in our code
+# (CMAKE_BINARY_DIR holds a path to the build directory)
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
+
