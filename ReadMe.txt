@@ -8,6 +8,6 @@ and phenotypes cell classes, tracks cell state, and maps disease
 sequelae in any tissue or organism.
 
 This codebase implements an interface to clustering and visualizing
-cell classes from CMP image data.  It was created for the Robert Marc
+cell classes from CMP image data. It was created for the Marc/Jones
 Lab by Josh Cates (SCI Institute) as part of a project with the TVC
 Software Development Center.
