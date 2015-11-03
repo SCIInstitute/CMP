@@ -106,7 +106,8 @@ bool Image::load(QString fname)
   if (mOriginal) cvReleaseImage(&(mOriginal));
 
   // Load image, forcing it to be a 3-channel grayscale image (flag > 1);
-  mOriginal = cvLoadImage(fname.toAscii(),1);
+  //  mOriginal = cvLoadImage(fname.toAscii(),1);
+    mOriginal = cvLoadImage(fname.toLatin1(),1);
   if (!mOriginal) return false;
 
   resetModified();
@@ -420,7 +421,9 @@ QImage ImageStack::selectedImage(bool original)
   if (mSelectedIndex >= 0)
   {
     if (original)
+      {
       return IplImageToQImage(mImages[mSelectedIndex]->original());
+      }
     else
       return IplImageToQImage(mImages[mSelectedIndex]->modified());
   }

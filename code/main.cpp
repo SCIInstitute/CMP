@@ -4,8 +4,8 @@
 //
 //---------------------------------------------------------------------------
 #include "cmp.h"
-#include <QtGui/QApplication>
-
+//#include <QtGui/QApplication>
+#include <QApplication>
 
 //-------------------------------------------------------------------------------------
 //
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   a.loadStyleSheet(":/CMP/qss/default.qss");
   
   QPixmap pixmap(":/CMP/Resources/splash3.png");
-  QSplashScreen splash(pixmap,Qt::WStyle_StaysOnTop);
+  QSplashScreen splash(pixmap,Qt::WindowStaysOnTopHint);
   splash.show();
   //  sleep(1.0);
   a.processEvents();

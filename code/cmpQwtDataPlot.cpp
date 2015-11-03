@@ -170,7 +170,10 @@ double cvHist2DRasterData::value(double x, double y) const
   if (idx0 <0 || idx0 >= mNumbins || idx1 < 0 || idx1 >=mNumbins )
     { return 0.0; }
   else
-    { return static_cast<double>(cvQueryHistValue_2D(mHistogram, idx0, idx1));  }
+    {
+      // return static_cast<double>(cvQueryHistValue_2D(mHistogram, idx0, idx1));
+     return static_cast<double>(cvGetReal2D(mHistogram->bins, idx0, idx1));
+    }
 }
   
 
@@ -216,7 +219,8 @@ void QwtHistogram2DDataPlot::write(std::ostream &s) const
     {
     for (unsigned int ix = 0; ix < numbins; ix++, x+=dx)
       {
-      s <<  cvQueryHistValue_2D(this->rasterData()->mHistogram, ix,iy) << mDelimeter;
+	//      s <<  cvQueryHistValue_2D(this->rasterData()->mHistogram, ix,iy) << mDelimeter;
+      s << cvGetReal2D(this->rasterData()->mHistogram->bins, ix, iy) << mDelimeter;
       }
     s << std::endl;
     }   
@@ -268,14 +272,16 @@ void QwtHistogram2DDataPlot::setHistogramData(const std::string &fn1,
   // RightButton: zoom out by 1
   // Ctrl+RighButton: zoom out to full size
   
-  Hist2DZoomer* zoomer = new Hist2DZoomer(canvas());
+  //  Hist2DZoomer* zoomer = new Hist2DZoomer(canvas());
+  Hist2DZoomer* zoomer = new Hist2DZoomer(new QwtPlotCanvas());
   zoomer->setMousePattern(QwtEventPattern::MouseSelect2,
 			  Qt::RightButton, Qt::ControlModifier);
   zoomer->setMousePattern(QwtEventPattern::MouseSelect3,
 			  Qt::RightButton);
   zoomer->setData(mRasterData);
 
-  QwtPlotPanner *panner = new QwtPlotPanner(canvas());
+  //  QwtPlotPanner *panner = new QwtPlotPanner(canvas());
+  QwtPlotPanner *panner = new QwtPlotPanner(new QwtPlotCanvas());
   panner->setAxisEnabled(QwtPlot::yRight, false);
   panner->setMouseButton(Qt::MidButton);
   

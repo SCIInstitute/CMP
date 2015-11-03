@@ -7,6 +7,7 @@
 #define _cmpWidgets_h_
 
 #ifdef _WIN32
+#pragma warning(disable : 4251 4244 4800)
 #pragma warning(push,3)
 #endif
 
@@ -82,7 +83,8 @@ public:
   QPreviewScene(QWidget *parent = 0);
   ~QPreviewScene() {}
 
-  void setBackground(const QImage &bg);
+  //  void setBackground(const QImage &bg);
+  void setQImageToDisplay(const QImage &bg);
   const QGraphicsPixmapItem *getBackground() const
   { return mBackground;}
   QGraphicsPixmapItem *getBackground()
@@ -114,7 +116,8 @@ public:
   
   void resizeEvent(QResizeEvent *event);
   
-  void setBackground(const QImage &bg);
+  //  void setBackground(const QImage &bg);
+  void setQImageToDisplay(const QImage &bg);
   QPreviewScene *getScene()  { return mScene; }
   const QPreviewScene * getScene() const { return mScene;}
   

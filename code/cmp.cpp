@@ -20,7 +20,7 @@ void CMPApplication::loadStyleSheet(const char *fn)
 }
 
 
-CMP::CMP(QWidget *parent, Qt::WFlags flags)
+CMP::CMP(QWidget *parent, Qt::WindowFlags flags)
   : QMainWindow(parent, flags),
     mImageStack(NULL),
     mClusterDirty(true),
@@ -50,21 +50,20 @@ void CMP::setupToolbar()
   mImportAction->setToolTip(tr("File Manager"));
   mImportAction->setStatusTip(tr("Import registered images"));
   mImportAction->setCheckable(true);
-  mImportAction->setToggleAction(true);
   connect(mImportAction, SIGNAL(toggled(bool)), this, SLOT(importPage(bool)));
   
   mPrefilterAction = new QAction(QIcon(":/CMP/Resources/prefilter.png"), tr("&Image Filters"), this);
   mPrefilterAction->setToolTip(tr("Image Filters"));
   mPrefilterAction->setStatusTip(tr("PreFilter image stack"));
   mPrefilterAction->setCheckable(true);
-  mPrefilterAction->setToggleAction(true);
+  //  mPrefilterAction->setToggleAction(true);
   connect(mPrefilterAction, SIGNAL(toggled(bool)), this, SLOT(prefilterPage(bool)));
     
   mClusterAction = new QAction(QIcon(":/CMP/Resources/cluster.png"), tr("&Cluster Data"), this);
   mClusterAction->setToolTip(tr("Data Clustering"));
   mClusterAction->setStatusTip(tr("Cluster image stack"));
   mClusterAction->setCheckable(true);
-  mClusterAction->setToggleAction(true);
+  //  mClusterAction->setToggleAction(true);
   connect(mClusterAction, SIGNAL(toggled(bool)), this, SLOT(clusterPage(bool)));
   
   mImportAction->setEnabled(true);
@@ -653,12 +652,16 @@ void CMP::updateImageDisplay()
 {
   if (mImageStack->selectedImage(true).isNull())
     {
-    ui.imageDisplay->setBackground(QImage());
-    reinterpret_cast<QMdiSubWindow *>(ui.ImageDisplaySubwindow->parent())->hide();
+      //    ui.imageDisplay->setBackground(QImage());
+      ui.imageDisplay->setQImageToDisplay(QImage());      
+      reinterpret_cast<QMdiSubWindow *>(ui.ImageDisplaySubwindow->parent())->hide();
     }
   else
     {
-    ui.imageDisplay->setBackground(mImageStack->selectedImage(true));
+      //    ui.imageDisplay->setBackground(mImageStack->selectedImage(true));
+      ui.imageDisplay->setQImageToDisplay(mImageStack->selectedImage(true));
+      //    ui.imageDisplay->getScene()->addPixmap((QPixmap::fromImage(mImageStack->selectedImage(true))));
+
     reinterpret_cast<QMdiSubWindow *>(ui.ImageDisplaySubwindow->parent())->show();
     ui.ImageDisplaySubwindow->show();
     }
@@ -758,7 +761,7 @@ void CMP::updateRGBImageDisplay()
 {
   if (mImageStack->selectedImage(true).isNull())
     {
-    ui.rgbImageDisplay->setBackground(QImage());
+    ui.rgbImageDisplay->setQImageToDisplay(QImage());
     reinterpret_cast<QMdiSubWindow *>(ui.rgbImageDisplaySubwindow->parent())->hide();
     }
   else
@@ -786,7 +789,7 @@ void CMP::updateRGBImageDisplay()
       }
     else
       {
-      ui.rgbImageDisplay->setBackground(QImage());
+      ui.rgbImageDisplay->setQImageToDisplay(QImage());
       reinterpret_cast<QMdiSubWindow *>(ui.rgbImageDisplaySubwindow->parent())->hide();
       
       return; // None of RGB component images are defined   
@@ -832,7 +835,7 @@ void CMP::updateRGBImageDisplay()
         }
       }
 
-    ui.rgbImageDisplay->setBackground(rgb);
+    ui.rgbImageDisplay->setQImageToDisplay(rgb);
     reinterpret_cast<QMdiSubWindow *>(ui.rgbImageDisplaySubwindow->parent())->show();
     ui.rgbImageDisplaySubwindow->show();
   }
@@ -843,12 +846,12 @@ void CMP::updateImageFilterDisplay()
   if (mImageStack->selectedImage(false).isNull() 
       || (mImageStack->selectedImage(false) == mImageStack->selectedImage(true)))
     {
-    ui.filterDisplay->setBackground(mImageStack->image(0,false));
+    ui.filterDisplay->setQImageToDisplay(mImageStack->image(0,false));
     reinterpret_cast<QMdiSubWindow *>(ui.FilterDisplaySubwindow->parent())->hide();
     }
   else
     {
-    ui.filterDisplay->setBackground(mImageStack->selectedImage(false));   
+    ui.filterDisplay->setQImageToDisplay(mImageStack->selectedImage(false));   
     reinterpret_cast<QMdiSubWindow *>(ui.FilterDisplaySubwindow->parent())->show();
     ui.FilterDisplaySubwindow->show();
     }
@@ -975,7 +978,7 @@ void CMP::resetSmoothImages()
 {
   mImageStack->resetFilters();
   updateImageFilterDisplay();
-  QApplication::restoreOverrideCursor();
+  //  QApplication::restoreOverrideCursor();
   ui.statusBar->clearMessage();
 }
 
@@ -1007,7 +1010,7 @@ void CMP::computeClusters()
       time_t tmpTime;
       time(&tmpTime);
       QString qs = QString(ctime(&tmpTime)) 
-	+ QString("K-Means: computing\n clusters\t%1\n max iters.\t%2\n accur.\t%3\n trials\t\%4\n")
+	+ QString("K-Means: computing\n clusters\t%1\n max iters.\t%2\n accur.\t%3\n trials\t%4\n")
 	.arg(ui.clusterNumSB->value())
 	.arg(ui.itersSB->value())
 	.arg(ui.accuracySB->value())
@@ -1063,7 +1066,7 @@ void CMP::computeClusters()
     }
   mProgressBar->hide();
   ui.statusBar->clearMessage();
-  QApplication::restoreOverrideCursor();  
+  QApplication::restoreOverrideCursor();
   
   mVisualizeDirty = true;
   mExportDirty = true;
@@ -1088,7 +1091,7 @@ void CMP::clusterListItemChanged(QListWidgetItem *item)
 	ui.clusterButton->setText("Cluster Unchecked Classes");
       }
     mImageStack->setClusterMasked(currentRow, checkState);
-    ui.clusterDisplay->setBackground(mImageStack->maskedClusterImage());
+    ui.clusterDisplay->setQImageToDisplay(mImageStack->maskedClusterImage());
   }
 
 }
@@ -1096,7 +1099,7 @@ void CMP::clusterListItemChanged(QListWidgetItem *item)
 void CMP::updateClusterDisplay()
 {
   // Set the image and show the necessary widgets.
-  ui.clusterDisplay->setBackground(mImageStack->maskedClusterImage());
+  ui.clusterDisplay->setQImageToDisplay(mImageStack->maskedClusterImage());
   reinterpret_cast<QMdiSubWindow *>(ui.ClusterDisplaySubwindow->parent())->show();
   ui.ClusterDisplaySubwindow->show();
   ui.clusterDisplay->show();
@@ -1200,7 +1203,7 @@ void CMP::clusterCheckAll()
   }
 
   // Update the cluster display image
-  ui.clusterDisplay->setBackground(mImageStack->maskedClusterImage());
+  ui.clusterDisplay->setQImageToDisplay(mImageStack->maskedClusterImage());
 
 }
 
@@ -1218,7 +1221,7 @@ void CMP::clusterUncheckAll()
   }
 
   // Update the cluster display image
-  ui.clusterDisplay->setBackground(mImageStack->maskedClusterImage());
+  ui.clusterDisplay->setQImageToDisplay(mImageStack->maskedClusterImage());
 }
 
 void CMP::visClassCheckAll()
@@ -1284,10 +1287,11 @@ void CMP::updateProgress(int p)
   // mProgressBar->show();
   // mProgressBar->repaint();
   
-  if (qApp->overrideCursor()->shape() == Qt::WaitCursor)
-    {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor),TRUE);
-    }
+  //  if (qApp->overrideCursor()->shape() == Qt::WaitCursor)
+  //   {
+      //    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor),TRUE);
+      //      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  //  }
   
   // TODO: The following is a hack to get the progress bar and status bar to
   // actually repaint.  Probably there is a much better way to do this?  Maybe
@@ -1411,33 +1415,33 @@ void CMP::saveWindowToDisk()
     // Switch on subwindow.  Each type may need different handling.    
     if (ui.ImageWindowArea->currentSubWindow()->widget() == ui.ImageDisplaySubwindow)
       {
-      QImage img(ui.imageDisplay->getScene()->getBackground()->pixmap());
-      success = img.save(filename);
+	QImage img(ui.imageDisplay->getScene()->getBackground()->pixmap().toImage());
+	success = img.save(filename);
       }
     else if (ui.ImageWindowArea->currentSubWindow()->widget() == ui.rgbImageDisplaySubwindow)
       {
-      QImage img(ui.rgbImageDisplay->getScene()->getBackground()->pixmap());
-      success = img.save(filename);
+	QImage img(ui.rgbImageDisplay->getScene()->getBackground()->pixmap().toImage());
+	success = img.save(filename);
       }
     else if (ui.ImageWindowArea->activeSubWindow()->widget() == ui.ClusterDisplaySubwindow)
       {
-      QImage img(ui.clusterDisplay->getScene()->getBackground()->pixmap());
-      success = img.save(filename);
+	QImage img(ui.clusterDisplay->getScene()->getBackground()->pixmap().toImage());
+	success = img.save(filename);
       }
     else if (ui.ImageWindowArea->activeSubWindow()->widget() == ui.FilterDisplaySubwindow)
       {
-      QImage img(ui.filterDisplay->getScene()->getBackground()->pixmap());
-      success = img.save(filename);
+	QImage img(ui.filterDisplay->getScene()->getBackground()->pixmap().toImage());
+	success = img.save(filename);
       }
     else // Just grab the widget contents with a pixmap and save
       {
-      QPixmap pix = QPixmap::grabWidget(ui.ImageWindowArea->activeSubWindow()->widget());
-      
-      if(pix.isNull())
-        {  
+	QPixmap pix = QPixmap::grabWidget(ui.ImageWindowArea->activeSubWindow()->widget());
+	
+	if(pix.isNull())
+	  {  
 	    QMessageBox::warning(this, tr("CMP"),
-                             tr("Save operation not supported for selected window."),
-                             QMessageBox::Ok);      
+				 tr("Save operation not supported for selected window."),
+				 QMessageBox::Ok);      
 	    return;
         }
       else

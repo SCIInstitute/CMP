@@ -1,16 +1,9 @@
-# jc -- For more information building and packaging with CMake and Qt, see the
-# following URL:  http://www.cmake.org/Wiki/BundleUtilitiesExample
-# See also the following thread:
-#  http://www.mail-archive.com/paraview@paraview.org/msg05234.html
-# Additional information for deploying Qt applications with plugins
-# (i.e the image reader/writers) can be found here: 
-# http://doc.qt.nokia.com/qq/qq09-mac-deployment.html#plugins
-#
-# To properly build a package on the Mac, CMake version 2.8.3 or later really
-# is required.
-
 project( CMP )
-cmake_minimum_required(VERSION 2.8.3)  
+cmake_minimum_required(VERSION 3.2.3)  
+cmake_policy(VERSION 3.2.3)
+
+# Make sure to find our custom find files
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 
 # Match everything when analyzing dependencies
 INCLUDE_REGULAR_EXPRESSION("^.*$")
@@ -20,10 +13,11 @@ option (INSTALL_TEST_FILES "Include CMP test images and help files in the instal
 option (INSTALL_SOURCE  "Install CMP source code." OFF)
 
 find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 include(FindQwt.cmake)
 if(QWT_FOUND)
-  include_directories( ${QWT_INCLUDE_DIR})
+include_directories( ${QWT_INCLUDE_DIR})
   link_directories( ${QWT_LIBRARY} )
 endif(QWT_FOUND)
 
@@ -45,6 +39,7 @@ set( CMP_SRCS
      code/cmpQtPairPlotDialog.cpp
 )
 
+
 set( CMP_MOC_HDRS
      code/cmp.h
      code/cmpPreferences.h
@@ -53,7 +48,6 @@ set( CMP_MOC_HDRS
      code/cmpImage.h
      code/cmpQwtDataPlot.h
 )
-
 
 set( CMP_UIS
      code/cmp2.ui
@@ -65,14 +59,12 @@ set( CMP_RCS
     code/cmp.qrc
 )
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-add_definitions( -Wall )
+#add_definitions( -Wall )
 
 # by default only QtCore and QtGui modules are enabled
 # other modules must be enabled like this:
-set( QT_USE_QT3SUPPORT TRUE )   
-set( QT_USE_QTXML TRUE )
+#set( QT_USE_QT3SUPPORT TRUE )   
+#set( QT_USE_QTXML TRUE )
 
 #--------------------------------------------------------------------------------
 # This sets the windows build that will need the special winmain@16 call. Qt provides
@@ -83,33 +75,39 @@ if(WIN32)
   set (QT_USE_QTMAIN TRUE)
 endif(WIN32)
 
-# this command finds Qt4 libraries and sets all required variables
-# note that it's Qt4, not QT4 or qt4
-find_package( Qt4 REQUIRED )
+# Find the QtWidgets library
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
 
-# add some useful macros and variables
-# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
-include( ${QT_USE_FILE} )
+# The Qt5Widgets_INCLUDES also includes the include directories for
+# dependencies QtCore and QtGui
+#include_directories(${Qt5Widgets_INCLUDES})
 
-# this command will generate rules that will run rcc on all files from CMP_RCS
-# in result CMP_RC_SRCS variable will contain paths to files produced by rcc
-QT4_ADD_RESOURCES( CMP_RC_SRCS ${CMP_RCS} )
+# We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
+#add_definitions(${Qt5Widgets_DEFINITIONS})
+
+
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
 
 # this will run uic on .ui files:
-QT4_WRAP_UI( CMP_UI_HDRS ${CMP_UIS} )
+QT5_WRAP_UI( CMP_UI_HDRS ${CMP_UIS} )
 
-# and finally this will run moc:
-QT4_WRAP_CPP( CMP_MOC_SRCS ${CMP_MOC_HDRS} )
+# Add resources to the Qt project
+qt5_add_resources(UI_RESOURCES code/cmp.qrc)
 
 # we need this to be able to include headers produced by uic in our code
 # (CMAKE_BINARY_DIR holds a path to the build directory)
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
-#INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} )
 
 # optionally build the test files
-#IF ( BUILD_TESTS )
-#   ADD_SUBDIRECTORY(test)
-#endif(BUILD_TESTS)
+IF ( BUILD_TESTS )
+   ADD_SUBDIRECTORY(test)
+endif(BUILD_TESTS)
 
 # For Apple set the icns file containing icons
 if(APPLE)
@@ -125,11 +123,14 @@ endif(APPLE)
 add_executable( CMP MACOSX_BUNDLE WIN32 
                 ${CMP_SRCS} 
                 ${CMP_MOC_SRCS} 
-                ${CMP_RC_SRCS} 
+                ${UI_RESOURCES} 
                 ${CMP_UI_HDRS} )
 
-target_link_libraries( CMP ${QT_LIBRARIES} ${OpenCV_LIBS} qwt)
+#target_link_libraries( CMP ${QT_LIBRARIES} ${OpenCV_LIBS} qwt)
+target_link_libraries(CMP Qt5::Widgets Qt5::PrintSupport ${OpenCV_LIBS} ${QWT_LIBRARY_DIR}/qwt.lib )
 
+
+# ------------------------------------------------------------
 # INSTALLATION AND PACKAGING
 include(InstallRequiredSystemLibraries)
 

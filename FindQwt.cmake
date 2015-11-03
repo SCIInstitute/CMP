@@ -12,6 +12,13 @@ FIND_PATH(QWT_INCLUDE_DIR qwt.h
   "$ENV{LIB_DIR}/include" 
   "$ENV{LIB_DIR}/include/qwt"
   )
+
+FIND_PATH(QWT_LIBRARY_DIR qwt.lib 
+  /usr/lib
+  /usr/local/lib
+  "$ENV{LIB_DIR}/lib" 
+  )
+  
 FIND_LIBRARY(QWT_LIBRARY qwt PATHS 
   /usr/lib
   /usr/local/lib

@@ -147,7 +147,7 @@ void CMP::plotQuickScatterplot()
 void CMP::plotAdvancedScatterplot()
 {
   QtPairPlotDialog ppDialog(g_settings->numberOfPlotPairs());
-  ppDialog.setWindowTitle(QApplication::translate("this", "CMP Scatter Plot", 0, QApplication::UnicodeUTF8));
+  ppDialog.setWindowTitle(QApplication::translate("this", "CMP Scatter Plot", 0));
   this->setupPairPlotOptions(&ppDialog);
   if (ppDialog.exec() == 0) return; // if dialog is rejected, do nothing
 
@@ -406,7 +406,7 @@ void CMP::plotImageScatterplots(const std::vector<std::pair<int,int> > &imgList,
   QwtScatterDataPlot *plot = new QwtScatterDataPlot();
   plot->setTitle("CMP Scatter Plot");
   QwtLegend *legend = new QwtLegend();
-  legend->setItemMode(QwtLegend::CheckableItem);
+  //  legend->setDefaultItemMode(QwtLegend::CheckableItem);
   plot->insertLegend(legend, QwtPlot::RightLegend);
   
   // Retrieve x-axis images and scatterplot each against y-axis image
@@ -609,7 +609,7 @@ void CMP::plotQuickPawprint()
 void CMP::plotAdvancedPawprint()
 {
   QtPairPlotDialog ppDialog(g_settings->numberOfPlotPairs());
-  ppDialog.setWindowTitle(QApplication::translate("this", "CMP Pawprint Plot", 0, QApplication::UnicodeUTF8));
+  ppDialog.setWindowTitle(QApplication::translate("this", "CMP Pawprint Plot", 0));
   this->setupPairPlotOptions(&ppDialog);
   if (ppDialog.exec() == 0) return; // if dialog is rejected, do nothing
 
@@ -771,7 +771,7 @@ void CMP::plotImagePawprints(const std::vector<std::pair<int,int> > &imgList,
   QwtPawprintDataPlot *plot = new QwtPawprintDataPlot();    
   plot->setTitle("CMP Pawprint");
   QwtLegend *legend = new QwtLegend();
-  legend->setItemMode(QwtLegend::CheckableItem);
+  //  legend->setItemMode(QwtLegend::CheckableItem);
   plot->insertLegend(legend, QwtPlot::RightLegend);
   
   // Retrieve x-axis images and scatterplot each against y-axis image
@@ -1026,6 +1026,7 @@ void CMP::plotImageHistograms(const std::vector<int> &imgIdx,
       const Image *img = mImageStack->cmpImage(imgIdx[i]);
 
       CvHistogram *hist = img->computeHistogram(true,numbins);
+      
       cvGetMinMaxHistValue( hist, &tmp_min_value, &tmp_max_value);
       
       if (tmp_min_value < min_value) min_value = tmp_min_value;
@@ -1045,8 +1046,9 @@ void CMP::plotImageHistograms(const std::vector<int> &imgIdx,
       double de = (tmp_img_max - tmp_img_min) / (double)numbins;
       for (int j = 0; j < numbins; j++)
         {
-        edges[j] = e;//(double) j;	  
-        counts[j] = (double) cvQueryHistValue_1D(hist,j);
+        edges[j] = e;//(double) j;
+	counts[j] = (double) cvGetReal1D(hist->bins, j);
+	  //        counts[j] = (double) cvQueryHistValue_1D(hist,j);
         e += de;
         }
       cvReleaseHist(&hist);
@@ -1141,7 +1143,8 @@ void CMP::plotClusterHistograms(const std::vector<int> &imgIdx,
        for (int j = 0; j < numbins; j++)
 	 {
    	  edges[j] = e;//(double) j;	  
-  	  counts[j] = (double) cvQueryHistValue_1D(hist,j);
+	  counts[j] = (double) cvGetReal1D(hist->bins, j);
+	  // 	  counts[j] = (double) cvQueryHistValue_1D(hist,j);
   	  e += de;
 	 }
        cvReleaseHist(&hist);

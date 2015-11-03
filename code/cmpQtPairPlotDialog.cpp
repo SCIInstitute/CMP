@@ -119,10 +119,10 @@ QtPairPlotDialog::QtPairPlotDialog(unsigned int n)
   
   mMainVertLayout->addWidget(buttonBox);
   
-  this->setWindowTitle(QApplication::translate("this", "Dialog", 0, QApplication::UnicodeUTF8));
-  mClusterNumberComboLabel->setText(QApplication::translate("this", "Mask with cluster -> ", 0, QApplication::UnicodeUTF8));
-  mNumBinsLabel->setText(QApplication::translate("this", "Number of Bins", 0, QApplication::UnicodeUTF8));
-  mNumSamplesLabel->setText(QApplication::translate("this", "Number of Samples", 0, QApplication::UnicodeUTF8));
+  this->setWindowTitle(QApplication::translate("this", "Dialog", 0));
+  mClusterNumberComboLabel->setText(QApplication::translate("this", "Mask with cluster -> ", 0));
+  mNumBinsLabel->setText(QApplication::translate("this", "Number of Bins", 0));
+  mNumSamplesLabel->setText(QApplication::translate("this", "Number of Samples", 0));
   
   QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));

@@ -2,6 +2,7 @@
 #define _cmpColorPaletteWidget_h_
 
 #ifdef _WIN32
+#pragma warning(disable : 4251 4244 4800)
 #pragma warning(push,3)
 #endif
 

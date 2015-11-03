@@ -20,11 +20,12 @@
 // For higher warning levels, Qt generates many thousands of warnings.  This is
 // an attempt to quell some of those.
 #ifdef _WIN32
+#pragma warning(disable : 4251 4244 4800)
 #pragma warning(push,3)
 #endif
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QProgressBar>
+#include <QMainWindow>
+#include <QProgressBar>
 #include <QMdiSubWindow>
 #include <QSettings>
 #include <QDebug>
@@ -39,6 +40,8 @@
 #include "cmpQtPairPlotDialog.h"
 
 // Qwt Includes
+#define QWT_DLL
+
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
@@ -100,7 +103,7 @@ class CMP : public QMainWindow
   Q_OBJECT
   
 public:
-  CMP(QWidget *parent = 0, Qt::WFlags flags = 0);
+  CMP(QWidget *parent = 0, Qt::WindowFlags = 0);
   ~CMP();
   
   void init();

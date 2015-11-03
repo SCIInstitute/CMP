@@ -4,7 +4,8 @@
 //
 //---------------------------------------------------------------------------
 #include "cmpWidgets.h"
-#include <QtGui>
+//#include <QtGui>
+#include <QtWidgets>
 #include <QDebug>
 
 QImageList::QImageList(QWidget *parent) :
@@ -43,16 +44,20 @@ QPreviewScene::QPreviewScene(QWidget *parent) :
   QGraphicsScene(parent),
   mBackground(NULL)
 {
-  mBackground = new QGraphicsPixmapItem(0, this);
+  //mBackground = new QGraphicsPixmapItem(0);
+
+  mBackground = this->addPixmap(QPixmap());
   mBackground->setOffset(0,0);
 }
 
-void QPreviewScene::setBackground(const QImage &bg) 
+//void QPreviewScene::setBackground(const QImage &bg)
+void QPreviewScene::setQImageToDisplay(const QImage &bg) 
 {
   mBackground->setPixmap(QPixmap::fromImage(bg));
-  mBackground->show();
-  //setBackgroundBrush(QColor(0,0,0));
+  setBackgroundBrush(QColor(0,0,0));
   setSceneRect(QRectF(0,0,bg.width(),bg.height()));
+  //  this->setPixmap(mBackground->pixmap());
+  mBackground->show();
 }
 
 void QPreviewScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
@@ -112,9 +117,10 @@ void QPreviewWidget::resizeEvent(QResizeEvent *event)
   emit resized(mScene->width(), mScene->height());
 }
 
-void QPreviewWidget::setBackground(const QImage &bg) 
+//void QPreviewWidget::setBackground(const QImage &bg)
+void QPreviewWidget::setQImageToDisplay(const QImage &bg) 
 {
-  mScene->setBackground(bg);
+  mScene->setQImageToDisplay(bg);
   fitInView(0,0,mScene->width(),mScene->height(), Qt::KeepAspectRatio);
 }
 

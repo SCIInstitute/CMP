@@ -1,16 +1,13 @@
-//---------------------------------------------------------------------------
-//
-// Copyright 2010 University of Utah.  All rights reserved
-//
-//---------------------------------------------------------------------------
 #ifndef _cmpImage_h_
 #define _cmpImage_h_
 
 #ifdef _WIN32
+#pragma warning(disable : 4251 4244 4800)
 #pragma warning(push,3)
 #endif
 
-#include <QtGui>
+//#include <QtGui>
+#include <QtWidgets>
 #include <QColor>
 
 #ifdef _WIN32

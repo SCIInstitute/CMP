@@ -6,13 +6,15 @@
 
 
 #ifdef _WIN32
+#pragma warning(disable : 4251 4244 4800)
 #pragma warning(push,3)
 #endif
 
 #include "qwt_plot.h"
-#include <qprinter.h>
+#include <QPrinter>
 #include <qprintdialog.h>
 #include <qwt_color_map.h>
+#include <qwt_plot_canvas.h>
 #include <qwt_plot_spectrogram.h>
 #include <qwt_scale_widget.h>
 #include <qwt_scale_draw.h>
@@ -139,7 +141,8 @@ public:
   QwtPawprintDataPlot(QWidget *parent = NULL) : QwtDataPlot(parent)
   { 
     plotType = CMP_PAWPRINT; 
-    this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed, true);
+    //    this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed, true);
+        this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     
     // std::cout << "Constructing Pawprint widget" << std::endl;
     // setSizePolicy( QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, TRUE) );
